@@ -13,3 +13,8 @@
 
 <!-- Page level plugins -->
 <script src="{{ asset('js/chart.js/Chart.min.js') }}"></script>
+
+{{-- vue js --}}
+<script src="{{ asset('js/app.js') }}"></script>
+
+

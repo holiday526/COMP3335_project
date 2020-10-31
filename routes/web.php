@@ -12,7 +12,9 @@
 */
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () { return view('index'); });
+    Route::get('/', function () { return view('dashboard.dashboard'); });
+    Route::get('/dashboard', function() { return view('dashboard.dashboard'); });
+    Route::get('/profile', function() { return view('users.profile'); });
 });
 
 Auth::routes();
