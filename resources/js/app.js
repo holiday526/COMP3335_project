@@ -29,6 +29,8 @@ import '../sass/custom.scss';
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 import UserProfile from "./components/users/UserProfile";
+import SystemCard from "./components/dashboard/SystemCard";
+import HistoryTable from "./components/history/HistoryTable";
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -39,6 +41,8 @@ import UserProfile from "./components/users/UserProfile";
 const app = new Vue({
     el: '#app',
     components: {
-        UserProfile
+        UserProfile,
+        SystemCard,
+        HistoryTable
     }
 });

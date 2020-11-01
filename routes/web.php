@@ -12,9 +12,12 @@
 */
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () { return view('dashboard.dashboard'); });
-    Route::get('/dashboard', function() { return view('dashboard.dashboard'); });
+    Route::get('/', 'WEB\GamesController@newGameIndex');
+    Route::post('/new_game', "WEB\GamesController@newGameStore");
+//    Route::get('/dashboard', function() { return view('dashboard.dashboard'); });
+    Route::get('/dashboard', "WEB\DashboardsController@dashboardIndex");
     Route::get('/profile', function() { return view('users.profile'); });
+    Route::get('/history', function() { return view('history.history'); });
 });
 
 Auth::routes();

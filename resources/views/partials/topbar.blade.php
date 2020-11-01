@@ -13,7 +13,8 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ url("/profile") }}">
                 <span class="mr-2 d-lg-inline text-gray-600">
-                    <i class="fas fa-fw fa-user"></i>
+                    <i class="fas fa-fw fa-user fa-sm mr-2"></i>
+                    <span class="text-gray-600">{{ strtoupper(Auth::user()->name) }}</span>
                 </span>
             </a>
         </li>
