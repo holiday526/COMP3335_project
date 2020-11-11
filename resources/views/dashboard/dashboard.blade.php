@@ -1,7 +1,7 @@
 @extends('kernel_page')
 
 @section('content')
-    <div class="container-fluid">
+    <b-container fluid>
         <div class="h3">
             Dashboard
             @if (!empty($game_info = App\Game::where('user_id', Auth::user()->id)->where('active', 1)->orderBy('id','desc')->first()))
@@ -97,7 +97,7 @@
                                 </div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                                <i class="fas fa-star fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
@@ -105,28 +105,69 @@
             </div>
 
         </b-row>
+            <b-row>
+                <b-col cols="3">
+                    <b-alert
+                        show
+                    >
+                        New Patch Available <b-button size="sm" pill class="-align-center float-right">Learn More</b-button>
+                    </b-alert>
+                </b-col>
+                <b-col cols="9">
+                    <b-row>
+                        <b-col>
+                            <system-card
+                                machine-name="Server 1"
+                                machine-status="Up"
+                                machine-alert="0"
+                            >
+                            </system-card>
+                        </b-col>
+                        <b-col>
+                            <system-card
+                                machine-name="Server 1"
+                                machine-status="Down"
+                                machine-alert="0"
+                            >
+                            </system-card>
+                        </b-col>
+                        <b-col>
+                            <system-card
+                                machine-name="Server 1"
+                                machine-status="Up"
+                                machine-alert="0"
+                            >
+                            </system-card>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            <system-card
+                                machine-name="Server 1"
+                                machine-status="Up"
+                                machine-alert="0"
+                            >
+                            </system-card>
+                        </b-col>
+                        <b-col>
+                            <system-card
+                                machine-name="Server 1"
+                                machine-status="Up"
+                                machine-alert="0"
+                            >
+                            </system-card>
+                        </b-col>
+                        <b-col>
+                            <system-card
+                                machine-name="Server 1"
+                                machine-status="Up"
+                                machine-alert="0"
+                            >
+                            </system-card>
+                        </b-col>
+                    </b-row>
+                </b-col>
+            </b-row>
 
-        <b-row>
-            <b-col>
-                <system-card></system-card>
-            </b-col>
-            <b-col>
-                <system-card></system-card>
-            </b-col>
-            <b-col>
-                <system-card></system-card>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col>
-                <system-card></system-card>
-            </b-col>
-            <b-col>
-                <system-card></system-card>
-            </b-col>
-            <b-col>
-                <system-card></system-card>
-            </b-col>
-        </b-row>
-    </div>
+    </b-container>
 @endsection

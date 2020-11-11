@@ -18,6 +18,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', "WEB\DashboardsController@dashboardIndex");
     Route::get('/profile', function() { return view('users.profile'); });
     Route::get('/history', function() { return view('history.history'); });
+
+    Route::get('/action/{machine_name}', "WEB\ActionsController@actionPageIndex");
 });
 
 Auth::routes();

@@ -1,11 +1,15 @@
 <template>
     <b-card no-body class="mb-3">
-        <b-card-header>Header</b-card-header>
-        <b-card-body>body</b-card-body>
+        <b-card-header>{{ machineName }}</b-card-header>
+        <b-card-body>
+            Status: <span v-bind:class="machineStatusTextVariant">{{ machineStatus }}</span><br>
+            Alert: {{ machineAlert }} <br>
+            System Load:
+        </b-card-body>
         <b-card-footer>
             <b-row>
                 <b-col>
-                    <b-button block @click="testing">Action</b-button>
+                    <a :href="actionRedirect" class="btn btn-block" :class="machineStatusButtonVariant">Action</a>
                 </b-col>
                 <b-col>
                     <b-button block>Detail</b-button>
@@ -22,6 +26,51 @@ export default {
         testing() {
             alert("hi");
         },
+    },
+    props: {
+        machineName: {
+            type: String,
+            require: true
+        },
+        machineStatus: {
+            type: String,
+            require: true
+        },
+        machineAlert: {
+            type: Number,
+            require: true
+        },
+        machineLoad: {
+            type: Object,
+            require: false
+        }
+    },
+    computed: {
+        machineStatusTextVariant() {
+            let textVariant;
+            if (this.machineStatus == "Up") {
+                textVariant = 'text-success';
+            } else if (this.machineStatus == "Busy") {
+                textVariant = 'text-warning';
+            } else if (this.machineStatus == "Down") {
+                textVariant = 'text-danger';
+            }
+            return textVariant;
+        },
+        machineStatusButtonVariant() {
+            let textVariant;
+            if (this.machineStatus == "Up") {
+                textVariant = 'btn-success';
+            } else if (this.machineStatus == "Busy") {
+                textVariant = 'btn-warning';
+            } else if (this.machineStatus == "Down") {
+                textVariant = 'btn-danger';
+            }
+            return textVariant;
+        },
+        actionRedirect() {
+            return "/action/" + this.machineName;
+        }
     }
 }
 </script>

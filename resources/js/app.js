@@ -31,6 +31,9 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 import UserProfile from "./components/users/UserProfile";
 import SystemCard from "./components/dashboard/SystemCard";
 import HistoryTable from "./components/history/HistoryTable";
+import SystemLoadBarChart from "./components/action/SystemLoadBarChart";
+import LoadedComponentsListedGroup from "./components/action/LoadedComponentsListedGroup";
+import SystemInformationStackTable from "./components/action/SystemInformationStackTable";
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -43,6 +46,9 @@ const app = new Vue({
     components: {
         UserProfile,
         SystemCard,
-        HistoryTable
+        HistoryTable,
+        SystemLoadBarChart,
+        LoadedComponentsListedGroup,
+        SystemInformationStackTable
     }
 });
