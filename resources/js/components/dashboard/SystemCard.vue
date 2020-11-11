@@ -1,5 +1,5 @@
 <template>
-    <b-card no-body>
+    <b-card no-body class="mb-3">
         <b-card-header>Header</b-card-header>
         <b-card-body>body</b-card-body>
         <b-card-footer>
