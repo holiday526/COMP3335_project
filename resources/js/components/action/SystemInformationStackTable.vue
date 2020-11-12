@@ -7,7 +7,7 @@ export default {
     name: "SystemInformationStackTable",
     props: {
         systemInformation: {
-            type: Object,
+            type: Array,
             require: true
         }
     }

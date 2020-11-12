@@ -1,6 +1,6 @@
 <template>
     <b-list-group>
-        <b-list-group-item v-for="item in list">{{ item }}</b-list-group-item>
+        <b-list-group-item v-for="item in list" :key="item">{{ item }}</b-list-group-item>
     </b-list-group>
 </template>
 

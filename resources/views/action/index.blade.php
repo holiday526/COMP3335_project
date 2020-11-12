@@ -1,7 +1,16 @@
 @extends('kernel_page')
 
 @section('content')
-    <h4>{{ $machine_name }}</h4>
+    <h4>{{ $machine_name }}
+        @if (($machine_status = 'Up') == 'Up')
+        <span class="float-right">Status: <span class="text-success">Up</span></span>
+        @elseif (($machine_status = 'Busy') == 'Busy')
+        <span class="float-right">Status: <span class="text-warning">Busy</span></span>
+        @else
+        <span class="float-right">Status: <span class="text-danger">Down</span></span>
+        @endif
+    </h4>
+
     <b-row class="h-25">
         <b-col cols="6">
             <b-card>
@@ -32,27 +41,42 @@
         </b-col>
     </b-row>
 
-    <h5 class="my-2">Logs & Alert</h5>
-
-    <b-row>
-        <b-col>
-            <div style="max-height: 200px; overflow-y: auto">
-                <div class="card w-100">
-                    <loaded-components-listed-group
-                        :list="['2020-11-02 06:00:00 System started successfully', '2020-11-03 06:00:00 System started successfully']"
-                    >
-                    </loaded-components-listed-group>
-                    <loaded-components-listed-group
-                        :list="['2020-11-02 06:00:00 System started successfully', '2020-11-03 06:00:00 System started successfully']"
-                    >
-                    </loaded-components-listed-group>
-                    <loaded-components-listed-group
-                        :list="['2020-11-02 06:00:00 System started successfully', '2020-11-03 06:00:00 System started successfully']"
-                    >
-                    </loaded-components-listed-group>
-                </div>
+    <div class="card my-2" onclick="logCollapse()">
+        <a  aria-expanded="true" style="text-decoration: none">
+            <div class="card-header d-flex w-100 text-dark">
+                Logs & Alert
             </div>
-        </b-col>
-    </b-row>
+        </a>
+        <div class="collapse" id="logsBlock">
+            <div class="card-body">
+                <b-row>
+                    <b-col>
+                        <div style="max-height: 200px; overflow-y: auto">
+                            <div class="card w-100">
+                                <loaded-components-listed-group
+                                    :list="['2020-11-02 06:00:00 System started successfully', '2020-11-03 06:00:00 System started successfully']"
+                                >
+                                </loaded-components-listed-group>
+                                <loaded-components-listed-group
+                                    :list="['2020-11-02 06:00:00 System started successfully', '2020-11-03 06:00:00 System started successfully']"
+                                >
+                                </loaded-components-listed-group>
+                                <loaded-components-listed-group
+                                    :list="['2020-11-02 06:00:00 System started successfully', '2020-11-03 06:00:00 System started successfully']"
+                                >
+                                </loaded-components-listed-group>
+                            </div>
+                        </div>
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+    </div>
 
+    <h5>Actions</h5>
+    @if ($test_server = true)
+        show
+    @else
+        no show
+    @endif
 @endsection

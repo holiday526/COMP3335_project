@@ -34,6 +34,8 @@ import HistoryTable from "./components/history/HistoryTable";
 import SystemLoadBarChart from "./components/action/SystemLoadBarChart";
 import LoadedComponentsListedGroup from "./components/action/LoadedComponentsListedGroup";
 import SystemInformationStackTable from "./components/action/SystemInformationStackTable";
+import PatchInfoBanner from "./components/patch/PatchInfoBanner";
+import PatchInfoBarChart from "./components/patch/PatchInfoBarChart";
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -49,6 +51,8 @@ const app = new Vue({
         HistoryTable,
         SystemLoadBarChart,
         LoadedComponentsListedGroup,
-        SystemInformationStackTable
+        SystemInformationStackTable,
+        PatchInfoBanner,
+        PatchInfoBarChart
     }
 });

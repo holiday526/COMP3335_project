@@ -5,24 +5,25 @@
         <div class="h3">
             Dashboard
             @if (!empty($game_info = App\Game::where('user_id', Auth::user()->id)->where('active', 1)->orderBy('id','desc')->first()))
-            <span class="float-right">Game ID: {{ $game_info->id }}</span>
+                <span class="float-right">Game ID: {{ $game_info->id }}</span>
             @else
-{{--                {{ redirect('/') }}--}}
                 <script>
                     window.location.replace({{url('/')}});
                 </script>
             @endif
         </div>
+        <!-- Round card -->
         <b-row>
             <b-card class="text-center border-primary mx-3 mb-3 w-100">
-                <div class="text-gray-800">
-                    Round: {{ "##" }}/20
+                <div class="text-gray-800 text-lg">
+                    Round: <span class="text-info">{{ str_pad(strval(1), 2, "0", STR_PAD_LEFT) }}</span>/20
                 </div>
             </b-card>
         </b-row>
+        <!-- end of Round card -->
 
+        <!-- Game info card -->
         <b-row>
-            <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-warning shadow h-100 py-2">
                     <div class="card-body">
@@ -41,7 +42,6 @@
                 </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body">
@@ -62,7 +62,6 @@
                 </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-info shadow h-100 py-2">
                     <div class="card-body">
@@ -83,7 +82,6 @@
                 </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
@@ -105,69 +103,70 @@
             </div>
 
         </b-row>
-            <b-row>
-                <b-col cols="3">
-                    <b-alert
-                        show
-                    >
-                        New Patch Available <b-button size="sm" pill class="-align-center float-right">Learn More</b-button>
-                    </b-alert>
-                </b-col>
-                <b-col cols="9">
-                    <b-row>
-                        <b-col>
-                            <system-card
-                                machine-name="Server 1"
-                                machine-status="Up"
-                                machine-alert="0"
-                            >
-                            </system-card>
-                        </b-col>
-                        <b-col>
-                            <system-card
-                                machine-name="Server 1"
-                                machine-status="Down"
-                                machine-alert="0"
-                            >
-                            </system-card>
-                        </b-col>
-                        <b-col>
-                            <system-card
-                                machine-name="Server 1"
-                                machine-status="Up"
-                                machine-alert="0"
-                            >
-                            </system-card>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col>
-                            <system-card
-                                machine-name="Server 1"
-                                machine-status="Up"
-                                machine-alert="0"
-                            >
-                            </system-card>
-                        </b-col>
-                        <b-col>
-                            <system-card
-                                machine-name="Server 1"
-                                machine-status="Up"
-                                machine-alert="0"
-                            >
-                            </system-card>
-                        </b-col>
-                        <b-col>
-                            <system-card
-                                machine-name="Server 1"
-                                machine-status="Up"
-                                machine-alert="0"
-                            >
-                            </system-card>
-                        </b-col>
-                    </b-row>
-                </b-col>
-            </b-row>
+        <!-- end of Game info card -->
+
+        <b-row>
+            <b-col>
+                <b-row>
+                    <b-col>
+                        <system-card
+                            machine-name="Order Server (Test)"
+                            machine-status="Down"
+                            machine-alert="0"
+                            current-patch="20.2.3.0.1"
+                        >
+                        </system-card>
+                    </b-col>
+                    <b-col>
+                        <system-card
+                            machine-name="Order Server (Production)"
+                            machine-status="Up"
+                            machine-alert="0"
+                            current-patch="20.2.3.0.1"
+                        >
+                        </system-card>
+                    </b-col>
+                    <b-col>
+                        <system-card
+                            machine-name="Order Server (Backup)"
+                            machine-status="Down"
+                            machine-alert="0"
+                            current-patch="20.2.3.0.1"
+                        >
+                        </system-card>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col>
+                        <system-card
+                            machine-name="Menu Server (Test)"
+                            machine-status="Up"
+                            machine-alert="0"
+                            current-patch="20.2.3.0.1"
+                        >
+                        </system-card>
+                    </b-col>
+                    <b-col>
+                        <system-card
+                            machine-name="Menu Server (Production)"
+                            machine-status="Up"
+                            machine-alert="0"
+                            current-patch="20.2.3.0.1"
+                        >
+                        </system-card>
+                    </b-col>
+                    <b-col>
+                        <system-card
+                            machine-name="Menu Server (Backup)"
+                            machine-status="Down"
+                            machine-alert="0"
+                            current-patch="20.2.3.0.1"
+                        >
+                        </system-card>
+                    </b-col>
+                </b-row>
+            </b-col>
+        </b-row>
 
     </b-container>
 @endsection

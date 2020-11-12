@@ -4,16 +4,17 @@
         <b-card-body>
             Status: <span v-bind:class="machineStatusTextVariant">{{ machineStatus }}</span><br>
             Alert: {{ machineAlert }} <br>
-            System Load:
+            System Load: <br>
+            Current Patch Ver.: {{ currentPatch }}
         </b-card-body>
         <b-card-footer>
             <b-row>
                 <b-col>
                     <a :href="actionRedirect" class="btn btn-block" :class="machineStatusButtonVariant">Action</a>
                 </b-col>
-                <b-col>
-                    <b-button block>Detail</b-button>
-                </b-col>
+<!--                <b-col>-->
+<!--                    <b-button block>Detail</b-button>-->
+<!--                </b-col>-->
             </b-row>
         </b-card-footer>
     </b-card>
@@ -23,9 +24,7 @@
 export default {
     name: "SystemCard",
     methods: {
-        testing() {
-            alert("hi");
-        },
+
     },
     props: {
         machineName: {
@@ -43,6 +42,10 @@ export default {
         machineLoad: {
             type: Object,
             require: false
+        },
+        currentPatch: {
+            type: String,
+            require: true
         }
     },
     computed: {

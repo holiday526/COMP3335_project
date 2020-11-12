@@ -20,6 +20,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/history', function() { return view('history.history'); });
 
     Route::get('/action/{machine_name}', "WEB\ActionsController@actionPageIndex");
+
+    Route::get('/patch_info', "WEB\PatchInfoController@patchInfoIndex");
+
+    Route::get('/thread_intelligence', "WEB\ThreatIntelligencesController@threatIntelligenceIndex");
 });
 
 Auth::routes();

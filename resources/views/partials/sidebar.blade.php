@@ -13,12 +13,26 @@
 
     <!-- Nav Item - Dashboard -->
     @if (count(\App\Game::where('user_id', Auth::user()->id)->get()) > 0)
-    <li class="nav-item active">
+    <li class="nav-item">
         <a class="nav-link" href="{{ url('/dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('/patch_info') }}">
+            <i class="fas fa-fw fa-check-square"></i>
+            <span>Patch Information</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('/thread_intelligence') }}">
+            <i class="fas fa-fw fa-exclamation-triangle"></i>
+            <span>Threat Intelligence</span>
+        </a>
+    </li>
+    <hr class="sidebar-divider my-0">
     @endif
 
     <!-- Divider -->

@@ -17,4 +17,9 @@
 {{-- vue js --}}
 <script src="{{ asset('js/app.js') }}"></script>
 
+{{-- chart js color schemes --}}
+<script type="text/javascript" src="{{ asset('js/chart.js/chartjs-plugin-colorschemes.min.js') }}"></script>
+
+<script src="{{ asset('js/self.js') }}"></script>
+
 
