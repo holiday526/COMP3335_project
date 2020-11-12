@@ -18,3 +18,5 @@ yarn-error.log
 .idea/phpunit.xml
 .idea/workspace.xml
 .styleci.yml
+.idea/laravel-plugin.xml
+.idea/vcs.xml
