@@ -9,10 +9,13 @@
     </a>
 
     <!-- Divider -->
-    <hr class="sidebar-divider my-0">
+    <hr class="sidebar-divider">
 
     <!-- Nav Item - Dashboard -->
     @if (count(\App\Game::where('user_id', Auth::user()->id)->get()) > 0)
+
+    <div class="sidebar-heading">Current Game Information</div>
+
     <li class="nav-item">
         <a class="nav-link" href="{{ url('/dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -32,16 +35,10 @@
             <span>Threat Intelligence</span>
         </a>
     </li>
-    <hr class="sidebar-divider my-0">
+    <hr class="sidebar-divider">
     @endif
 
-    <!-- Divider -->
-{{--    <hr class="sidebar-divider">--}}
-
-    <!-- Heading -->
-{{--    <div class="sidebar-heading">--}}
-{{--        Interface--}}
-{{--    </div>--}}
+    <div class="sidebar-heading">Game History</div>
 
     <li class="nav-item">
         <a class="nav-link" href="{{ url("/history") }}">
