@@ -168,5 +168,10 @@
             </b-col>
         </b-row>
 
+        <form action="/skip_round" method="post">
+            @csrf
+            <b-button variant="warning" block class="my-2">Skip Round</b-button>
+        </form>
+
     </b-container>
 @endsection

@@ -20,7 +20,8 @@ export default {
                 datasets: [
                     {
                         label: 'Load',
-                        // backgroundColor: '#79d4f8',
+                        borderColor: '#f87979',
+                        backgroundColor: 'transparent',
                         data: [0.2, 0.1, 0.4, 0.9, 0.7, 0.8, 0.6, 0.4]
                     }
                 ]
@@ -28,7 +29,8 @@ export default {
             options: {
                 title: {
                     display: true,
-                    text: 'Load'
+                    text: 'System Load',
+                    fontSize: 20
                 },
                 responsive: true,
                 maintainAspectRatio: false,
