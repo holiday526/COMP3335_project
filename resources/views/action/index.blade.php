@@ -33,7 +33,9 @@
                 <b-card-header>System Information</b-card-header>
                 <b-card-body>
                     <system-information-stack-table
-                        :system-information="[{OS: 'Oracle Linux 8.2', last_patch_date: '2020/09/21', current_DB_patch_version: 'Version 1'}]"
+                        :system-os="'Oracle Linux 8.2'"
+                        :system-last-patch-date="'2020/09/21'"
+                        :system-current-db-patch-version="'Version 1'"
                     >
                     </system-information-stack-table>
                 </b-card-body>

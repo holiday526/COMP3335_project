@@ -2,32 +2,14 @@
 
 @section('content')
     <h4>Patch Information</h4>
+    @foreach ($all_patch_info as $info)
     <patch-info-banner
-        variant="danger"
-        heading="Patch fix 1"
-        description="Patch fix description"
-        url-to-doc="https://www.google.com"
+        variant="{{ $info->patch_variant }}"
+        heading="{{ $info->patch_name }}"
+        description="{{ $info->patch_description }}"
+        url-to-doc="{{ $info->patch_url }}"
+        patch-version="{{ $info->patch_version }}"
     >
     </patch-info-banner>
-    <patch-info-banner
-        variant="primary"
-        heading="Patch fix 2"
-        description="Patch fix description"
-        url-to-doc="https://www.google.com"
-    >
-    </patch-info-banner>
-    <patch-info-banner
-        variant="primary"
-        heading="Patch fix 3"
-        description="Patch fix description"
-        url-to-doc="https://www.google.com"
-    >
-    </patch-info-banner>
-    <patch-info-banner
-        variant="primary"
-        heading="Patch fix 4"
-        description="Patch fix description"
-        url-to-doc="https://www.google.com"
-    >
-    </patch-info-banner>
+    @endforeach
 @endsection

@@ -4,7 +4,7 @@
     <b-container fluid>
         <div class="h3">
             Dashboard
-            @if (!empty($game_info = App\Game::where('user_id', Auth::user()->id)->where('active', 1)->orderBy('id','desc')->first()))
+            @if (!empty($game_info))
                 <span class="float-right">Game ID: {{ $game_info->id }}</span>
             @else
                 <script>
@@ -16,7 +16,7 @@
         <b-row>
             <b-card class="text-center border-primary mx-3 mb-3 w-100">
                 <div class="text-gray-800 text-lg">
-                    Round: <span class="text-info">{{ str_pad(strval(1), 2, "0", STR_PAD_LEFT) }}</span>/20
+                    Round: <span class="text-info">{{ str_pad(strval($game_info->round), 2, "0", STR_PAD_LEFT) }}</span>/20
                 </div>
             </b-card>
         </b-row>
@@ -32,7 +32,7 @@
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                     Budget
                                 </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">${{ 80000 }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">${{ $game_info->budget }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -51,7 +51,7 @@
                                     Manpower
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <span class="text-primary">{{ 10 }}</span>/10
+                                    <span class="text-primary">{{ $game_info->manpower }}</span>/10
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -71,7 +71,7 @@
                                     Active Users
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ 500 }}
+                                    {{ $game_info->active_user }}
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -91,7 +91,7 @@
                                     Reputation
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <span class="text-success">{{ 100 }}</span>/100
+                                    <span class="text-success">{{ $game_info->reputation }}</span>/100
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -170,7 +170,7 @@
 
         <form action="/skip_round" method="post">
             @csrf
-            <b-button variant="warning" block class="my-2">Skip Round</b-button>
+            <b-button type="submit" variant="warning" block class="my-2">Skip Round</b-button>
         </form>
 
     </b-container>

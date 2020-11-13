@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3 v-if="JSON.parse(items).length == 0">No History</h3>
+        <h3 v-if="JSON.parse(items).length == 0">No Game History</h3>
 
         <b-table v-else :items="JSON.parse(items)">
         </b-table>

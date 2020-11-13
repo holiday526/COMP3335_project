@@ -2,9 +2,17 @@
 
 @section('content')
 <h4>Threat Intelligence</h4>
-<b-alert show variant="info" align="center">New Remote access trojan (RAT) targeting Oracle 18C</b-alert>
-<b-alert show variant="danger" align="center">New Remote access trojan (RAT) targeting Oracle 18C</b-alert>
-<b-alert show variant="warning" align="center">New Remote access trojan (RAT) targeting Oracle 18C</b-alert>
+@foreach ($all_threat_info as $info)
+<patch-info-banner
+    variant="{{ $info->variant }}"
+    heading="{{ $info->heading }}"
+    description="{{ $info->description }}"
+    url-to-doc="{{ $info->url }}"
+    align="center"
+>
+</patch-info-banner>
+@endforeach
+
 <patch-info-bar-chart
     :dataset="{
                 labels: ['SSH', 'SQL Injection', 'DDOS', 'Malware', 'XSS'],

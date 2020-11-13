@@ -4,8 +4,8 @@
         <b-card-body>
             Status: <span v-bind:class="machineStatusTextVariant">{{ machineStatus }}</span><br>
             Alert: {{ machineAlert }} <br>
-            System Load: <br>
-            Current Patch Ver.: {{ currentPatch }}
+            Database Load: <br>
+            Current DB Patch Ver.: {{ currentPatch }}
         </b-card-body>
         <b-card-footer>
             <b-row>

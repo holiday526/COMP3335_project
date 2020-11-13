@@ -1,6 +1,9 @@
 <template>
-    <b-alert show :variant="variant">
+    <b-alert show :variant="variant" :align="align">
         <h4 class="alert-heading">{{ heading }}</h4>
+        <p v-if="patchVersion">
+            Version: {{ patchVersion }}
+        </p>
         <p>
             {{ description }}
         </p>
@@ -28,6 +31,15 @@ export default {
         },
         urlToDoc: {
             require: true
+        },
+        align: {
+            type: String,
+            require: false,
+            default: 'left',
+        },
+        patchVersion: {
+            type: String,
+            require: false,
         }
     }
 }
