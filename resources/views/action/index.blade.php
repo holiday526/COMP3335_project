@@ -1,10 +1,10 @@
 @extends('kernel_page')
 
 @section('content')
-    <h4>{{ $machine_name }}
-        @if (($machine_status = 'Up') == 'Up')
+    <h4>{{ App\ServerInfo::find($machine_id)->server_name }} ({{ App\ServerInfo::find($machine_id)->server_type }})
+        @if (($machine_status = App\ServerInfo::find($machine_id)->server_status) == 'Up')
             <span class="float-right">Status: <span class="text-success">Up</span></span>
-        @elseif (($machine_status = 'Busy') == 'Busy')
+        @elseif ($machine_status == 'Busy')
             <span class="float-right">Status: <span class="text-warning">Busy</span></span>
         @else
             <span class="float-right">Status: <span class="text-danger">Down</span></span>
@@ -76,7 +76,7 @@
     </div>
 
     <h5>Backup Actions</h5>
-    @if ($test_server = true)
+    @if (App\ServerInfo::find($machine_id)->server_type == 'Test')
     <b-row>
         <b-col>
             <b-button variant="primary" id="backupButton" block>System Backup</b-button>

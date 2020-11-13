@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 class ActionsController extends Controller
 {
     //
-    public function actionPageIndex($machine_name) {
-        return view('action.index')->with(['machine_name'=>$machine_name]);
+    public function actionPageIndex($machine_id) {
+        
+        return view('action.index')->with(['machine_id'=>$machine_id]);
     }
 }

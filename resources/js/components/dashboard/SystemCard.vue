@@ -4,7 +4,7 @@
         <b-card-body>
             Status: <span v-bind:class="machineStatusTextVariant">{{ machineStatus }}</span><br>
             Alert: {{ machineAlert }} <br>
-            Database Load: <br>
+            Database Load: {{ databaseLoad }} <br>
             Current DB Patch Ver.: {{ currentPatch }}
         </b-card-body>
         <b-card-footer>
@@ -36,7 +36,7 @@ export default {
             require: true
         },
         machineAlert: {
-            type: Number,
+            type: String,
             require: true
         },
         machineLoad: {
@@ -44,6 +44,14 @@ export default {
             require: false
         },
         currentPatch: {
+            type: String,
+            require: true
+        },
+        databaseLoad: {
+            type: String,
+            require: true
+        },
+        machineId: {
             type: String,
             require: true
         }
@@ -72,7 +80,7 @@ export default {
             return textVariant;
         },
         actionRedirect() {
-            return "/action/" + this.machineName;
+            return "/action/" + this.machineId;
         }
     }
 }

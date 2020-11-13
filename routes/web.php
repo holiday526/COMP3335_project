@@ -19,7 +19,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', function() { return view('users.profile'); });
     Route::get('/history', function() { return view('history.history'); });
 
-    Route::get('/action/{machine_name}', "WEB\ActionsController@actionPageIndex");
+    Route::get('/action/{machine_id}', "WEB\ActionsController@actionPageIndex");
 
     Route::get('/patch_info', "WEB\PatchInfoController@patchInfoIndex");
 
