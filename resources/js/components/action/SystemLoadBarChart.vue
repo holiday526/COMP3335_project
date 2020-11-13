@@ -1,6 +1,6 @@
 <template>
 <!--    <bar-chart :data="chartdata" :options="options"></bar-chart>-->
-    <line-chart :data="chartdata" :options="options"></line-chart>
+    <line-chart :data="chartData" :options="options"></line-chart>
 </template>
 
 <script>
@@ -15,7 +15,7 @@ export default {
     name: "SystemLoadBarChart",
     data: () => {
         return {
-            chartdata: {
+            chartData: {
                 labels: ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00"],
                 datasets: [
                     {

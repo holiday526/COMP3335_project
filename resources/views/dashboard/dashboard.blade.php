@@ -127,10 +127,10 @@
                     <system-card
                         machine-name="{{ $order_server->server_name }} ({{ $order_server->server_type }})"
                         machine-status="{{ $order_server->server_status }}"
-                        machine-alert="{{ $order_server->alert }}"
+                        database-load="{{ $order_server->server_database_load_status }}"
                         current-patch="{{ App\PatchInfo::find($order_server->server_current_db_patch_version_id)->patch_version }}"
+                        machine-alert="{{ $order_server->alert }}"
                         machine-id="{{ $order_server->id }}"
-                        machine-alert="{{ $menu_server->alert }}"
                     >
                     </system-card>
                 </b-col>
