@@ -1,11 +1,6 @@
 @extends('kernel_page')
 
 @section('content')
-    @if(Session::has('round_message'))
-        <script>
-            alert("{{ Session::get('round_message') }}");
-        </script>
-    @endif
     <b-container fluid>
         <div class="h3">
             Dashboard
@@ -26,6 +21,10 @@
             </b-card>
         </b-row>
         <!-- end of Round card -->
+
+        @if(Session::has('round_message'))
+            <b-alert variant="info" show align="center">{{ Session::get('round_message') }}</b-alert>
+        @endif
 
         <!-- Game info card -->
         <b-row>

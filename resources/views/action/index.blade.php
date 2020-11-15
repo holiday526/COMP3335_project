@@ -88,13 +88,14 @@
             </form>
         </b-col>
         <b-col>
-            @if (!empty($rollback_record = App\GameServerBackup::where('server_id', '=', $machine_id)->orderBy('id', 'desc')->first()))
+            @if (!empty($rollback_record = App\GameLog::where('server_id', '=', $machine_id)->orderBy('id', 'desc')->first()))
                 <form action="/round" method="post">
                     @csrf
                     <input type="hidden" name="action" value="rollback">
-                    <input type="hidden" name="patch_id" value="{{ App\GameServerBackup::where('server_id', '=', $machine_id)->orderBy('id', 'desc')->first()->patch_id }}">
+{{--                    <input type="hidden" name="patch_id" value="{{ App\GameLog::where('server_id', '=', $machine_id)->orderBy('id', 'desc')->first()->patch_id }}">--}}
+                    <input type="hidden" name="patch_id" value="{{ $rollback_record->on_patch_no }}">
                     <input type="hidden" name="server_id" value="{{ $machine_id }}">
-                    <b-button type="submit" variant="outline-secondary" id="rollbackButton" block>System Rollback : {{ App\PatchInfo::find($rollback_record->patch_id)->patch_version }}</b-button>
+                    <b-button type="submit" variant="outline-secondary" id="rollbackButton" block>System Rollback : {{ App\PatchInfo::find($rollback_record->on_patch_no)->patch_version }}</b-button>
                 </form>
             @else
                 <b-button variant="outline-secondary" id="rollbackButton" class="disabled" block>System Rollback: {{ "None" }}</b-button>
