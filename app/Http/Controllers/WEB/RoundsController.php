@@ -30,6 +30,7 @@ class RoundsController extends Controller
                     ->where('active', '=', true)
                     ->first();
 
+        // Games more than 20 rounds, game ends
         if ($game_info->round > 19) {
             session(['round_message'=>"Game Ends, Please go 'History' page and check for the result"]);
             $game_info->active = false;
@@ -37,6 +38,7 @@ class RoundsController extends Controller
             return redirect('/');
         }
 
+        // validation rules
         $rules = [
             'action' => ['required','string', new RoundActionRule()],
             'patch_id' => 'exists:patch_info,patch_id',
@@ -46,17 +48,17 @@ class RoundsController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-//            return abort(403, 'Action forbidden');
-            dd($request->all());
-            return $validator->errors()->getMessages();
+            return abort(403, 'Action forbidden');
         }
 
+        // player choose to skip round
         if ($request->action == 'skip') {
             session(['round_message'=>'Skipped round '.$game_info->round]);
             $this->createGameLog($game_info->id, $request->action, $game_info->round);
             goto next_round;
         }
 
+        // player choose to backup
         if ($request->action == 'backup') {
             $server_info = ServerInfo::find($request->server_id);
             session(['round_message'=>"Round $game_info->round: Perform $server_info->server_name ($server_info->server_type) $request->action"]);
@@ -70,6 +72,7 @@ class RoundsController extends Controller
             goto next_round;
         }
 
+        // player choose to rollback
         if ($request->action == 'rollback') {
             $server_info = ServerInfo::find($request->server_id);
             session(['round_message'=>"Round $game_info->round: Perform $server_info->server_name ($server_info->server_type) $request->action"]);
