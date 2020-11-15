@@ -2,9 +2,9 @@
 
 @section('content')
     <h4>{{ App\ServerInfo::find($machine_id)->server_name }} ({{ App\ServerInfo::find($machine_id)->server_type }})
-        @if (($machine_status = App\ServerInfo::find($machine_id)->server_status) == 'Up')
+        @if (($server_status = App\ServerInfo::find($machine_id)->server_status) == 'Up')
             <span class="float-right">Status: <span class="text-success">Up</span></span>
-        @elseif ($machine_status == 'Busy')
+        @elseif ($server_status == 'Busy')
             <span class="float-right">Status: <span class="text-warning">Busy</span></span>
         @else
             <span class="float-right">Status: <span class="text-danger">Down</span></span>
@@ -76,117 +76,114 @@
     </div>
 
     <h5>Backup Actions</h5>
-    @if (App\ServerInfo::find($machine_id)->server_type == 'Test')
+    <!-- Backup buttons -->
     <b-row>
         <b-col>
-            <b-button variant="primary" id="backupButton" block>System Backup</b-button>
+            <form action="/round" method="POST">
+                @csrf
+                <input type="hidden" name="action" value="backup">
+                <input type="hidden" name="patch_id" value="{{ App\ServerInfo::find($machine_id)->server_current_db_patch_version_id }}">
+                <input type="hidden" name="server_id" value="{{ $machine_id }}">
+                <b-button type="submit" variant="primary" id="backupButton" block>System Backup</b-button>
+            </form>
         </b-col>
         <b-col>
-            <b-button variant="outline-secondary" id="rollbackButton" block>System Rollback</b-button>
+            @if (!empty($rollback_record = App\GameServerBackup::where('server_id', '=', $machine_id)->orderBy('id', 'desc')->first()))
+                <form action="/round" method="post">
+                    @csrf
+                    <input type="hidden" name="action" value="rollback">
+                    <input type="hidden" name="patch_id" value="{{ App\GameServerBackup::where('server_id', '=', $machine_id)->orderBy('id', 'desc')->first()->patch_id }}">
+                    <input type="hidden" name="server_id" value="{{ $machine_id }}">
+                    <b-button type="submit" variant="outline-secondary" id="rollbackButton" block>System Rollback : {{ App\PatchInfo::find($rollback_record->patch_id)->patch_version }}</b-button>
+                </form>
+            @else
+                <b-button variant="outline-secondary" id="rollbackButton" class="disabled" block>System Rollback: {{ "None" }}</b-button>
+            @endif
         </b-col>
     </b-row>
+    <!-- end of Backup buttons -->
 
-    <h5 class="mt-2">Patching Actions</h5>
-    <b-row>
-        <b-col>
-            <b-button variant="primary" id="planning1Button" block>Planning &rarr; Patch: ver 1</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="secondary" id="testing1Button" block>Testing &rarr; Patch: ver 1</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="success" id="implementation1Button" block>Implementation &rarr; Patch: ver 1</b-button>
-        </b-col>
-    </b-row>
-    <b-row class="mt-2">
-        <b-col>
-            <b-button variant="primary" id="planning2Button" block>Planning &rarr; Patch: ver 2</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="secondary" id="testing2Button" block>Testing &rarr; Patch: ver 2</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="success" id="implementation2Button" block>Implementation &rarr; Patch: ver 2</b-button>
-        </b-col>
-    </b-row>
-    <b-row class="mt-2">
-        <b-col>
-            <b-button variant="primary" id="planning3Button" block>Planning &rarr; Patch: ver 3</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="secondary" id="testing3Button" block>Testing &rarr; Patch: ver 3</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="success" id="implementation3Button" block>Implementation &rarr; Patch: ver 3</b-button>
-        </b-col>
-    </b-row>
-
-    @else
-    <b-row>
-        <b-col>
-            <b-button variant="primary" id="backupButton" block>System Backup</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="outline-secondary" id="rollbackButton" block>System Rollback</b-button>
-        </b-col>
-    </b-row>
-    <h5 class="mt-2">Patching Actions</h5>
-    <b-row>
-        <b-col>
-            <b-button variant="secondary" id="testing1Button" block>Testing &rarr; Patch: ver 1</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="success" id="implementation1Button" block>Implementation &rarr; Patch: ver 1</b-button>
-        </b-col>
-    </b-row>
-    <b-row class="mt-2">
-        <b-col>
-            <b-button variant="secondary" id="testing2Button" block>Testing &rarr; Patch: ver 2</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="success" id="implementation2Button" block>Implementation &rarr; Patch: ver 2</b-button>
-        </b-col>
-    </b-row>
-    <b-row class="mt-2">
-        <b-col>
-            <b-button variant="secondary" id="testing3Button" block>Testing &rarr; Patch: ver 3</b-button>
-        </b-col>
-        <b-col>
-            <b-button variant="success" id="implementation3Button" block>Implementation &rarr; Patch: ver 3</b-button>
-        </b-col>
-    </b-row>
-    @endif
+    <!-- Backup tooltip -->
     <b-tooltip target="backupButton">
         Perform system backup<br>cost 1 round
     </b-tooltip>
     <b-tooltip target="rollbackButton">
         Rollback to previous backup image<br>cost 1 round
     </b-tooltip>
-    <b-tooltip target="planning1Button">
-        Planning on patching version 1<br>cost 1 round
-    </b-tooltip>
-    <b-tooltip target="testing1Button">
-        Testing on patching version 1<br>cost 1 round
-    </b-tooltip>
-    <b-tooltip target="implementation1Button">
-        Implementation on patching version 1<br>cost 1 round
-    </b-tooltip>
-    <b-tooltip target="planning2Button">
-        Planning on patching version 2<br>cost 1 round
-    </b-tooltip>
-    <b-tooltip target="testing2Button">
-        Testing on patching version 2<br>cost 1 round
-    </b-tooltip>
-    <b-tooltip target="implementation2Button">
-        Implementation on patching version 2<br>cost 1 round
-    </b-tooltip>
-    <b-tooltip target="planning3Button">
-        Planning on patching version 3<br>cost 1 round
-    </b-tooltip>
-    <b-tooltip target="testing2Button">
-        Testing on patching version 3<br>cost 1 round
-    </b-tooltip>
-    <b-tooltip target="implementation2Button">
-        Implementation on patching version 3<br>cost 1 round
-    </b-tooltip>
+    <!-- end of Backup tooltip -->
+
+    <h5 class="mt-2">Patching Actions</h5>
+    @if (App\ServerInfo::find($machine_id)->server_type == 'Test')
+        @foreach(App\PatchInfo::where('patch_id', '!=', App\ServerInfo::find($machine_id)->server_current_db_patch_version_id)->get() as $patch)
+        <b-row class="my-2">
+            <b-col>
+                <form action="/round" method="post">
+                    @csrf
+                    <input type="hidden" name="action" value="planning">
+                    <input type="hidden" name="patch_id" value="{{ $patch->patch_id }}">
+                    <input type="hidden" name="server_id" value="{{ $machine_id }}">
+                    <b-button variant="primary" type="submit" id="{{'planning'.$patch->patch_id.'Button'}}" block>Planning &rarr; Patch: {{ $patch->patch_version }}</b-button>
+                </form>
+            </b-col>
+            <b-col>
+                <form action="/round" method="post">
+                    @csrf
+                    <input type="hidden" name="action" value="testing">
+                    <input type="hidden" name="patch_id" value="{{ $patch->patch_id }}">
+                    <input type="hidden" name="server_id" value="{{ $machine_id }}">
+                    <b-button variant="secondary" type="submit" id="{{'testing'.$patch->patch_id.'Button'}}" block>Testing &rarr; Patch: {{ $patch->patch_version }}</b-button>
+                </form>
+            </b-col>
+            <b-col>
+                <form action="/round" method="post">
+                    @csrf
+                    <input type="hidden" name="action" value="implementation">
+                    <input type="hidden" name="patch_id" value="{{ $patch->patch_id }}">
+                    <input type="hidden" name="server_id" value="{{ $machine_id }}">
+                    <b-button variant="success" type="submit" id="{{'implementation'.$patch->patch_id.'Button'}}" block>Implementation &rarr; Patch: {{ $patch->patch_version }}</b-button>
+                </form>
+            </b-col>
+        </b-row>
+
+        <b-tooltip target="{{'planning'.$patch->patch_id.'Button'}}">
+            Planning on patch {{ $patch->patch_version }}<br>cost 1 round
+        </b-tooltip>
+        <b-tooltip target="{{'testing'.$patch->patch_id.'Button'}}">
+            Testing on patch {{ $patch->patch_version }}<br>cost 1 round
+        </b-tooltip>
+        <b-tooltip target="{{'implementation'.$patch->patch_id.'Button'}}">
+            Implementation on patch {{ $patch->patch_version }}<br>cost 1 round
+        </b-tooltip>
+        @endforeach
+    @else
+        @foreach(App\PatchInfo::where('patch_id', '!=', App\ServerInfo::find($machine_id)->server_current_db_patch_version_id)->get() as $patch)
+        <b-row class="my-2">
+            <b-col>
+                <form action="/round" method="post">
+                    @csrf
+                    <input type="hidden" name="action" value="testing">
+                    <input type="hidden" name="patch_id" value="{{ $patch->patch_id }}">
+                    <input type="hidden" name="server_id" value="{{ $machine_id }}">
+                    <b-button variant="secondary" type="submit" id="{{'testing'.$patch->patch_id.'Button'}}" block>Testing &rarr; Patch: {{ $patch->patch_version }}</b-button>
+                </form>
+            </b-col>
+            <b-col>
+                <form action="/round" method="post">
+                    @csrf
+                    <input type="hidden" name="action" value="implementation">
+                    <input type="hidden" name="patch_id" value="{{ $patch->patch_id }}">
+                    <input type="hidden" name="server_id" value="{{ $machine_id }}">
+                    <b-button variant="success" type="submit" id="{{'implementation'.$patch->patch_id.'Button'}}" block>Implementation &rarr; Patch: {{ $patch->patch_version }}</b-button>
+                </form>
+            </b-col>
+        </b-row>
+
+        <b-tooltip target="{{'testing'.$patch->patch_id.'Button'}}">
+            Testing on patch {{ $patch->patch_version }}<br>cost 1 round
+        </b-tooltip>
+        <b-tooltip target="{{'implementation'.$patch->patch_id.'Button'}}">
+            Implementation on patch {{ $patch->patch_version }}<br>cost 1 round
+        </b-tooltip>
+        @endforeach
+    @endif
 @endsection

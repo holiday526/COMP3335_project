@@ -4,7 +4,9 @@ namespace App\Http\Controllers\WEB;
 
 use App\GamePlayerInfoInit;
 use App\Http\Controllers\Controller;
+use App\PatchInfo;
 use App\ServerInfo;
+use App\ServerInfoInit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Game;
@@ -56,11 +58,28 @@ class GamesController extends Controller
             ->where('server_name', '=', 'Menu Server')
             ->get();
 
-        $all_server_info_init = DB::table('server_info_inits')
-            ->select('*')
-            ->get();
+        $order_server_init_patch = ServerInfoInit::where('server_name', '=', 'Order Server')->first()->server_current_db_patch_version_id;
+        $menu_server_init_patch = ServerInfoInit::where('server_name', '=', 'Menu Server')->first()->server_current_db_patch_version_id;
 
-        foreach ($all_server_info_init as $server_info_init) {
+        $patch_info_id = PatchInfo::pluck('patch_id')->toArray();
+
+        $random_good_patch_order_server = [];
+        $random_good_patch_menu_server = [];
+
+        if (($key = array_search($order_server_init_patch, $patch_info_id)) !== false) {
+            $random_good_patch_order_server = $patch_info_id;
+            unset($random_good_patch_order_server[$key]);
+        }
+
+        if (($key = array_search($menu_server_init_patch, $patch_info_id)) !== false) {
+            $random_good_patch_menu_server = $patch_info_id;
+            unset($random_good_patch_menu_server[$key]);
+        }
+
+        $random_good_patch_order_server = $random_good_patch_order_server[array_rand($random_good_patch_order_server,1)];
+        $random_good_patch_menu_server = $random_good_patch_menu_server[array_rand($random_good_patch_menu_server,1)];
+
+        foreach ($server_info_init_order_server as $server_info_init) {
             $new_server_info = new ServerInfo();
             $new_server_info->game_id = $new_game->id;
             $new_server_info->server_name = $server_info_init->server_name;
@@ -72,6 +91,23 @@ class GamesController extends Controller
             $new_server_info->server_os = $server_info_init->server_os;
             $new_server_info->server_last_patch_date = $server_info_init->server_last_patch_date;
             $new_server_info->server_current_db_patch_version_id = $server_info_init->server_current_db_patch_version_id;
+            $new_server_info->good_patch_id = $random_good_patch_order_server;
+            $new_server_info->save();
+        }
+
+        foreach ($server_info_init_menu_server as $server_info_init) {
+            $new_server_info = new ServerInfo();
+            $new_server_info->game_id = $new_game->id;
+            $new_server_info->server_name = $server_info_init->server_name;
+            $new_server_info->server_type = $server_info_init->server_type;
+            $new_server_info->server_status = $server_info_init->server_status;
+            $new_server_info->server_database_load_status = $server_info_init->server_database_load_status;
+            $new_server_info->server_database_load_data_list = $server_info_init->server_database_load_data_list;
+            $new_server_info->server_loaded_component = $server_info_init->server_loaded_component;
+            $new_server_info->server_os = $server_info_init->server_os;
+            $new_server_info->server_last_patch_date = $server_info_init->server_last_patch_date;
+            $new_server_info->server_current_db_patch_version_id = $server_info_init->server_current_db_patch_version_id;
+            $new_server_info->good_patch_id = $random_good_patch_menu_server;
             $new_server_info->save();
         }
 

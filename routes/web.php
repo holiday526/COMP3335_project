@@ -21,6 +21,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/action/{machine_id}', "WEB\ActionsController@actionPageIndex");
 
+    Route::post('/round', "WEB\RoundsController@roundHandler");
+
     Route::get('/patch_info', "WEB\PatchInfoController@patchInfoIndex");
 
     Route::get('/thread_intelligence', "WEB\ThreatIntelligencesController@threatIntelligenceIndex");

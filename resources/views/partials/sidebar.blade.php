@@ -12,7 +12,7 @@
     <hr class="sidebar-divider">
 
     <!-- Nav Item - Dashboard -->
-    @if (count(\App\Game::where('user_id', Auth::user()->id)->get()) > 0)
+    @if (count(\App\Game::where('user_id', Auth::user()->id)->where('active', true)->get()) > 0)
 
     <div class="sidebar-heading">Current Game Information</div>
 

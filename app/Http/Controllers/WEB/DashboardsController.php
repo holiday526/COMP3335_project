@@ -12,6 +12,8 @@ class DashboardsController extends Controller
 {
     //
     public function dashboardIndex() {
+
+
         $game_info = Game::where('user_id', Auth::user()->id)->where('active', 1)->orderBy('id','desc')->first();
 
         // if no active game, redirect to new game page

@@ -20,3 +20,4 @@ yarn-error.log
 .styleci.yml
 .idea/laravel-plugin.xml
 .idea/vcs.xml
+.idea/symfony2.xml

@@ -1,6 +1,11 @@
 @extends('kernel_page')
 
 @section('content')
+    @if(Session::has('round_message'))
+        <script>
+            alert("{{ Session::get('round_message') }}");
+        </script>
+    @endif
     <b-container fluid>
         <div class="h3">
             Dashboard
@@ -137,10 +142,10 @@
             @endforeach
         </b-row>
 
-        <form action="/skip_round" method="post">
+        <form action="/round" method="post">
             @csrf
+            <input type="hidden" name="action" value="skip">
             <b-button type="submit" variant="warning" block class="my-2">Skip Round</b-button>
         </form>
-
     </b-container>
 @endsection
