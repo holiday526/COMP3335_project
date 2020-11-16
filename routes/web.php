@@ -26,6 +26,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/patch_info', "WEB\PatchInfoController@patchInfoIndex");
 
     Route::get('/thread_intelligence', "WEB\ThreatIntelligencesController@threatIntelligenceIndex");
+
+    Route::get('/game_log', "WEB\GamesController@gameLogIndex");
 });
 
 Auth::routes();

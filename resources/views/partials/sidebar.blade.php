@@ -35,6 +35,13 @@
             <span>Threat Intelligence</span>
         </a>
     </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('/game_log') }}">
+            <i class="fas fa-fw fa-file-medical-alt"></i>
+            <span>Game Logs</span>
+        </a>
+    </li>
     <hr class="sidebar-divider">
     @endif
 

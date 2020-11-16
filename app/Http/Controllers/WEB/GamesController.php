@@ -113,4 +113,16 @@ class GamesController extends Controller
 
         return redirect('/dashboard');
     }
+
+    public function gameLogIndex() {
+        $player_games = Game::where('user_id', '=', Auth::id())->pluck('id')->toArray();
+        $game_logs = DB::table('game_logs')
+            ->select('game_id', 'remark')
+            ->whereIn('game_id', $player_games)
+            ->orderBy('game_id', 'desc')
+            ->orderBy('round', 'asc')
+            ->get();
+
+        return view('game_log.index')->with(['game_logs'=>$game_logs]);
+    }
 }
