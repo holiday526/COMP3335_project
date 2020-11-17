@@ -21,6 +21,13 @@ class DashboardsController extends Controller
             return redirect('/');
         }
 
+        if ($game_info->round == 21) {
+            $game_info->active = false;
+            $game_info->save();
+            session(['round_message'=>"Game Ends, Please go 'History' page and check for the result"]);
+            return redirect('/');
+        }
+
         $order_servers = ServerInfo::where('server_name', 'Order Server')->where('game_id', $game_info->id)->get();
         $menu_servers = ServerInfo::where('server_name', 'Menu Server')->where('game_id', $game_info->id)->get();
 

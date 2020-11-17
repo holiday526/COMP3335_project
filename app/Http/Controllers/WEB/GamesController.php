@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\WEB;
 
+use App\GameIncidentHandle;
+use App\GameIncidentInit;
 use App\GamePlayerInfoInit;
 use App\Http\Controllers\Controller;
 use App\PatchInfo;
@@ -109,6 +111,16 @@ class GamesController extends Controller
             $new_server_info->server_current_db_patch_version_id = $server_info_init->server_current_db_patch_version_id;
             $new_server_info->good_patch_id = $random_good_patch_menu_server;
             $new_server_info->save();
+        }
+
+        // set game incident init
+        $game_incident_init_ids = GameIncidentInit::pluck('id')->toArray();
+        foreach ($game_incident_init_ids as $game_incident_init_id) {
+            GameIncidentHandle::create([
+                'game_id' => $new_game->id,
+                'game_incident_id' => $game_incident_init_id,
+                'active' => false
+            ]);
         }
 
         return redirect('/dashboard');

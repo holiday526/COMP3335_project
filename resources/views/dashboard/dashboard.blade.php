@@ -26,6 +26,10 @@
             <b-alert variant="info" show align="center">{{ Session::get('round_message') }}</b-alert>
         @endif
 
+        @if(Session::has('incident_message'))
+            <b-alert variant="danger" show align="center">{{ Session::get('incident_message') }}</b-alert>
+        @endif
+
         <!-- Game info card -->
         <b-row>
             <div class="col-xl-3 col-md-6 mb-4">
@@ -34,7 +38,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Budget
+                                    Money
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">${{ $game_info->budget }}</div>
                             </div>
@@ -120,6 +124,7 @@
                     current-patch="{{ App\PatchInfo::find($menu_server->server_current_db_patch_version_id)->patch_version }}"
                     machine-alert="{{ $menu_server->alert }}"
                     machine-id="{{ $menu_server->id }}"
+                    server-down-time="{{ $menu_server->shutdown_round }}"
                 >
                 </system-card>
             </b-col>
@@ -135,6 +140,7 @@
                         current-patch="{{ App\PatchInfo::find($order_server->server_current_db_patch_version_id)->patch_version }}"
                         machine-alert="{{ $order_server->alert }}"
                         machine-id="{{ $order_server->id }}"
+                        server-down-time="{{ $order_server->shutdown_round }}"
                     >
                     </system-card>
                 </b-col>

@@ -4,8 +4,9 @@
         <b-card-body>
             Status: <span v-bind:class="machineStatusTextVariant">{{ machineStatus }}</span><br>
             Alert: {{ machineAlert }} <br>
-            Database Load: {{ databaseLoad }} <br>
-            Current DB Patch Ver.: {{ currentPatch }}
+            Database Load: <span :class="databaseLoadTextClass">{{ databaseLoad }}</span> <br>
+            Current DB Patch Ver.: {{ currentPatch }} <br>
+            Server Down Time: {{ serverDownTime }} Round(s)
         </b-card-body>
         <b-card-footer>
             <b-row>
@@ -54,6 +55,10 @@ export default {
         machineId: {
             type: String,
             require: true
+        },
+        serverDownTime: {
+            type: Number,
+            require: true
         }
     },
     computed: {
@@ -81,6 +86,13 @@ export default {
         },
         actionRedirect() {
             return "/action/" + this.machineId;
+        },
+        databaseLoadTextClass() {
+            switch (this.databaseLoad) {
+                case "Idle": return 'text-secondary';
+                case "Normal": return 'text-success';
+                case "Heavy": return 'text-danger';
+            }
         }
     }
 }

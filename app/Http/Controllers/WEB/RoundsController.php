@@ -10,11 +10,55 @@ use App\Rules\RoundActionRule;
 use App\ServerInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class RoundsController extends Controller
 {
+    const BACKUP_HEAD_COUNT = 2;
+    const ROLLBACK_HEAD_COUNT = 2;
+    const PLANNING_HEAD_COUNT = 2;
+    const TESTING_HEAD_COUNT = 4;
+    const IMPLEMENTATION_HEAD_COUNT = 4;
+
+    const ROLLBACK_ROUND = 1;
+
+    const ROUND_MONEY_LOSS = -1000;
+    const ROUND_USER_LOSS = -20;
+    const ROUND_REPUTATION_LOSS = -5;
+
+    const ROUND_MONEY_GAIN = 2000;
+    const ROUND_USER_GAIN = 40;
+    const ROUND_REPUTATION_GAIN = 10;
+
+    private function setMoney($game_id, $gain_or_lose, $weighting) {
+        $game_info = Game::find($game_id);
+        $game_info->budget = $game_info->budget + $gain_or_lose * $weighting;
+        $game_info->save();
+    }
+
+    private function setActiveUser($game_id, $gain_or_lose, $weighting) {
+        $game_info = Game::find($game_id);
+        $game_info->active_user = $game_info->active_user + $gain_or_lose *  $weighting;
+        if ($game_info->active_user <= 0) {
+            $game_info->active_user = 0;
+        }
+        $game_info->save();
+    }
+
+    private function setReputation($game_id, $gain_or_lose, $weighting) {
+        $game_info = Game::find($game_id);
+        $game_info->reputation = $game_info->reputation + $gain_or_lose * $weighting;
+        $game_info->save();
+    }
+
+    private function getAllServerIds($game_id, $server_type = []) {
+        if (empty($server_type)) {
+            return ServerInfo::where('game_id', '=', $game_id)->pluck('id')->toArray();
+        }
+        return ServerInfo::where('game_id', '=', $game_id)->whereIn('server_type', $server_type)->pluck('id')->toArray();
+    }
+
     //
     private function createGameLog($game_id, $action, $round, $remark, $server_id = null, $on_patch_no = null) {
         return $new_game_log = GameLog::create([
@@ -41,19 +85,87 @@ class RoundsController extends Controller
         $server_info->save();
     }
 
+    private function switchOffServer($server_id) {
+        $server_info = ServerInfo::find($server_id);
+        $server_info->server_status = 'Down';
+        $server_info->save();
+    }
+
+    private function serverRestore($game_id) {
+        $servers = ServerInfo::where('game_id', '=', $game_id)->pluck('id')->toArray();
+        foreach ($servers as $server_id) {
+            $server_info = ServerInfo::find($server_id);
+            if ($server_info->shutdown_round > 0) {
+                $server_info->shutdown_round = $server_info->shutdown_round - 1;
+//                $server_info->server_status = 'Down';
+            } else {
+                $server_info->server_status = 'Up';
+            }
+            $server_info->save();
+        }
+    }
+
+    private function serverShutdownForRounds($server_id, $shutdown_round) {
+        $server_info = ServerInfo::find($server_id);
+        $server_info->shutdown_round = $shutdown_round;
+        $server_info->server_status = 'Down';
+        $server_info->server_database_load_status = 'None';
+        $server_info->save();
+    }
+
+    private function usingManpower($game_id, $head_count) {
+        $game_info = Game::find($game_id);
+        $game_info->manpower = $game_info->manpower - $head_count;
+        $game_info->manpower_inuse = $head_count;
+        $game_info->save();
+    }
+
+    private function restoreManpower($game_id) {
+        $game_info = Game::find($game_id);
+        $game_info->manpower = $game_info->manpower + $game_info->manpower_inuse;
+        $game_info->manpower_inuse = 0;
+        $game_info->save();
+    }
+
+    private function checkHitGoodPatch($server_id) {
+        $server = ServerInfo::find($server_id);
+        return $server->server_current_db_patch_version_id == $server->good_patch_id;
+    }
+
+    // by round function
+    private function checkProductionAndBackupHitGoodPatch($game_id) {
+        $all_production_backup_server_id = $this->getAllServerIds($game_id, ['Production', 'Backup']);
+        foreach($all_production_backup_server_id as $server_id) {
+            $server_status = ServerInfo::find($server_id)->server_status;
+            if (!($this->checkHitGoodPatch($server_id)) && $server_status == 'Up') {
+                // lose small amount of money and reputation, also lose active users
+                $this->setMoney($game_id, self::ROUND_MONEY_LOSS, rand(rand(0,1),1));
+                $this->setActiveUser($game_id, self::ROUND_USER_LOSS, rand(rand(0,1), 1));
+                $this->setReputation($game_id, self::ROUND_REPUTATION_LOSS, rand(rand(0,1),1));
+            } elseif ($this->checkHitGoodPatch($server_id) && $server_status == 'Down') {
+                // lose big amount of money and reputation, also lose active users
+                $this->setMoney($game_id, self::ROUND_MONEY_LOSS, rand(rand(0,1),2));
+                $this->setActiveUser($game_id, self::ROUND_USER_LOSS, rand(rand(0,1),2));
+                $this->setReputation($game_id, self::ROUND_REPUTATION_LOSS, rand(rand(0,1),2));
+            } else {
+                // gain money and reputation, also gain active users
+                $this->setMoney($game_id, self::ROUND_MONEY_GAIN, rand(rand(0,1),2));
+                $this->setActiveUser($game_id, self::ROUND_USER_GAIN, rand(rand(0,1),2));
+                $this->setReputation($game_id, self::ROUND_REPUTATION_GAIN, rand(rand(0,1),2));
+            }
+        }
+    }
+
+    // by incident function
+    // TODO: handle incidents, for example -> 1. server sudden down, 2. being hacked, 3. under DDOS attack
+    private function checkIncident($game_id, $current_round) {
+
+    }
+
     public function roundHandler(Request $request) {
         $game_info = Game::where('user_id', '=', Auth::id())
                     ->where('active', '=', true)
                     ->first();
-
-        // Games more than 20 rounds, game ends
-        if ($game_info->round > 19) {
-            game_ends:
-            session(['round_message'=>"Game Ends, Please go 'History' page and check for the result"]);
-            $game_info->active = false;
-            $game_info->save();
-            return redirect('/');
-        }
 
         // validation rules
         $rules = [
@@ -68,6 +180,19 @@ class RoundsController extends Controller
             return abort(403, 'Action forbidden');
         }
 
+        // Games more than 20 rounds, game ends
+        if ($game_info->round > 20) {
+            game_ends:
+            session(['round_message'=>"Game Ends, Please go 'History' page and check for the result"]);
+            $game_info->active = false;
+            $game_info->save();
+            return redirect('/');
+        }
+
+        // each turn restore manpower & server
+        $this->restoreManpower($game_info->id);
+        $this->serverRestore($game_info->id);
+
         // player choose to skip round
         if ($request->action == 'skip') {
             $round_msg = 'Skipped round '.$game_info->round;
@@ -78,14 +203,16 @@ class RoundsController extends Controller
 
         $server_info = null;
 
+        // set $server_info
         if (!empty($request->server_id)) {
             $server_info = ServerInfo::find($request->server_id);
         }
 
-        // player choose to backup
+        // player choose to backup, no down time
         if ($request->action == 'backup') {
             $round_msg = "Round $game_info->round: Perform $server_info->server_name ($server_info->server_type) $request->action";
             session(['round_message'=>$round_msg]);
+
             $this->createGameLog(
                 $game_info->id,
                 $request->action,
@@ -94,24 +221,26 @@ class RoundsController extends Controller
                 $request->server_id,
                 $request->patch_id
             );
+
+            $this->usingManpower($game_info->id, self::BACKUP_HEAD_COUNT);
+
             goto next_round;
         }
 
-        // player choose to rollback
+        // player choose to rollback, have down time
         if ($request->action == 'rollback') {
+            $server_info->server_current_db_patch_version_id = $request->patch_id;
+            $server_info->save();
 
             $round_msg = "Round $game_info->round: Perform $server_info->server_name ($server_info->server_type) $request->action";
             session(['round_message'=>$round_msg]);
-            $this->createGameLog(
-                $game_info->id,
-                $request->action,
-                $game_info->round,
-                $round_msg,
-                $request->server_id,
-                $request->patch_id
-            );
-            $server_info->server_current_db_patch_version_id = $request->patch_id;
-            $server_info->save();
+
+            $this->createGameLog($game_info->id, $request->action, $game_info->round, $round_msg, $request->server_id, $request->patch_id);
+
+            // use manpower & have down time
+            $this->usingManpower($game_info->id, self::ROLLBACK_HEAD_COUNT);
+            $this->serverShutdownForRounds($server_info->id, self::ROLLBACK_ROUND);
+
             goto next_round;
         }
 
@@ -121,6 +250,7 @@ class RoundsController extends Controller
 
             $round_msg = "";
 
+            // only for testing servers, add some random to the game
             if ($request->patch_id == $server_info->good_patch_id) {
                 $round_msg = "Round $game_info->round: Planning on patch $patch_version, maybe capable at $server_info->server_name ($server_info->server_type)";
             } else {
@@ -132,14 +262,10 @@ class RoundsController extends Controller
             }
 
             session(['round_message'=> $round_msg]);
-            $this->createGameLog(
-                $game_info->id,
-                $request->action,
-                $game_info->round,
-                $round_msg,
-                $request->server_id,
-                $request->patch_id
-            );
+            $this->createGameLog($game_info->id, $request->action, $game_info->round, $round_msg, $request->server_id, $request->patch_id);
+
+            // use manpower
+            $this->usingManpower($game_info->id, self::PLANNING_HEAD_COUNT);
 
             goto next_round;
         }
@@ -147,6 +273,7 @@ class RoundsController extends Controller
         if ($request->action == 'testing') {
 
             $patch_version = $this->getPatchVersion($request->patch_id);
+
             if ($server_info->server_type == 'Test') {
                 if ($request->patch_id == $server_info->good_patch_id) {
                     // hit the good patch
@@ -155,7 +282,7 @@ class RoundsController extends Controller
                     // hit the bad patch, may lose game resources.
                     $yes_or_not = "not";
                 }
-            } elseif ($server_info->server_type == 'Production'){
+            } elseif ($server_info->server_type == 'Production') {
                 if ($request->patch_id == $server_info->good_patch_id) {
                     // hit the good patch
                     $yes_or_not = "";
@@ -177,6 +304,11 @@ class RoundsController extends Controller
 
             $this->createGameLog($game_info->id, $request->action, $game_info->round, $round_msg, $request->server_id, $request->patch_id);
             session(['round_message'=> $round_msg]);
+
+            // use manpower only
+            $this->usingManpower($game_info->id, self::TESTING_HEAD_COUNT);
+
+            goto next_round;
         }
 
         if ($request->action == 'implementation') {
@@ -225,15 +357,31 @@ class RoundsController extends Controller
                 }
             }
 
-            $round_msg = "Round $game_info->round: Implementing on patch $patch_version, it is $yes_or_not capable at $server_info->server_name ($server_info->server_type). $lose_money";
+            // server real implement, server will be shutdown
+            // have down time
+            $server_shutdown_round = rand(1,3);
+            $server_shutdown_msg = "Server shutdown for $server_shutdown_round round.";
 
+            $this->serverShutdownForRounds($server_info->id, $server_shutdown_round);
+
+            // implementing
+            $server_info->server_current_db_patch_version_id = $request->patch_id;
+            $server_info->save();
+
+            // handle round messages
+            $round_msg = "Round $game_info->round: Implementing on patch $patch_version, it is $yes_or_not capable at $server_info->server_name ($server_info->server_type). $lose_money $server_shutdown_msg";
             $this->createGameLog($game_info->id, $request->action, $game_info->round, $round_msg, $request->server_id, $request->patch_id);
             session(['round_message' => $round_msg]);
+
+            $this->usingManpower($game_info->id, self::IMPLEMENTATION_HEAD_COUNT);
+            goto next_round;
         }
 
         next_round:
+        $this->checkProductionAndBackupHitGoodPatch($game_info->id);
         $game_info->round = $game_info->round + 1;
         $game_info->save();
+        $this->checkIncident($game_info->id, $game_info->round);
 
         return redirect('/dashboard');
     }

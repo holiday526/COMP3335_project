@@ -5,7 +5,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-utensils"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">{{ env('APP_NAME') }}</sup></div>
+        <div class="sidebar-brand-text mx-3">{{ env('APP_NAME') }}</div>
     </a>
 
     <!-- Divider -->
@@ -36,16 +36,19 @@
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('/game_log') }}">
-            <i class="fas fa-fw fa-file-medical-alt"></i>
-            <span>Game Logs</span>
-        </a>
-    </li>
     <hr class="sidebar-divider">
     @endif
 
     <div class="sidebar-heading">Game History</div>
+
+    @if (count(\App\Game::where('user_id', Auth::user()->id)->get()) > 0)
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('/game_log') }}">
+                <i class="fas fa-fw fa-file-medical-alt"></i>
+                <span>Game Logs</span>
+            </a>
+        </li>
+    @endif
 
     <li class="nav-item">
         <a class="nav-link" href="{{ url("/history") }}">
@@ -55,6 +58,12 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url("/instruction") }}">
+            <i class="fas fa-fw fa-chalkboard-teacher"></i>
+            <span>Game Instruction</span></a>
+    </li>
 
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">

@@ -2,5 +2,5 @@
 
 @section('content')
     <h4>Game Logs</h4>
-    {{ $game_logs }}
+    <game-logs-table :items="{{ $game_logs }}"></game-logs-table>
 @endsection

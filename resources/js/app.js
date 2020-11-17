@@ -36,6 +36,7 @@ import LoadedComponentsListedGroup from "./components/action/LoadedComponentsLis
 import SystemInformationStackTable from "./components/action/SystemInformationStackTable";
 import PatchInfoBanner from "./components/patch/PatchInfoBanner";
 import PatchInfoBarChart from "./components/patch/PatchInfoBarChart";
+import GameLogsTable from "./components/game_logs/GameLogsTable";
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -53,6 +54,7 @@ const app = new Vue({
         LoadedComponentsListedGroup,
         SystemInformationStackTable,
         PatchInfoBanner,
-        PatchInfoBarChart
+        PatchInfoBarChart,
+        GameLogsTable
     }
 });

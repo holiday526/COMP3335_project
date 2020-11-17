@@ -28,6 +28,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/thread_intelligence', "WEB\ThreatIntelligencesController@threatIntelligenceIndex");
 
     Route::get('/game_log', "WEB\GamesController@gameLogIndex");
+
+    Route::get('/instruction', "WEB\InstructionsController@instructionIndex");
 });
 
 Auth::routes();
