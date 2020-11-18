@@ -164,14 +164,35 @@ class RoundsController extends Controller
             if ($incident->round == $current_round) {
                 $incident->active = true;
                 $incident->save();
-                session(['incident_message'=>"Incident Report: $incident->error_server_name: $incident->incident_message"]);
             }
         }
     }
 
     // TODO: handle incidents, for example -> 1. server sudden down, 2. being hacked, 3. under DDOS attack
-    private function checkIncident($game_id) {
-
+    private function executeIncident($game_id) {
+        $activeIncidents = GameIncidentHandle::where('game_id', $game_id)->get();
+        if (!empty($activeIncidents)) {
+            foreach ($activeIncidents as $activeIncident) {
+                // get back the specific server
+                $server_info = ServerInfo::where('game_id', $game_id)
+                    ->where('server_name', $activeIncident->error_server_name)
+                    ->where('server_type', $activeIncident->server_type)
+                    ->first();
+                if ($server_info->server_current_db_patch_version_id != $server_info->good_patch_id) {
+                    // execute punishment
+                    // TODO: execute different punishment
+                    session(['incident_message'=>"Incident Report: $server_info->server_name ($server_info->server_type): $activeIncident->incident_message"]);
+                    if ($activeIncident->server_shutdown) {
+                        $this->serverShutdownForRounds($server_info->id, rand(1,2));
+                    }
+                } else {
+                    // unset punishment
+                    $activeIncident->active = false;
+                    $activeIncident->save();
+                    Session::forget('incident_message');
+                }
+            }
+        }
     }
 
     public function roundHandler(Request $request) {
@@ -394,6 +415,7 @@ class RoundsController extends Controller
         $game_info->round = $game_info->round + 1;
         $game_info->save();
         $this->activateIncident($game_info->id, $game_info->round);
+        $this->executeIncident($game_info->id);
 
         return redirect('/dashboard');
     }
