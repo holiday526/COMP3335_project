@@ -181,9 +181,11 @@ class RoundsController extends Controller
                 if ($server_info->server_current_db_patch_version_id != $server_info->good_patch_id) {
                     // execute punishment
                     // TODO: execute different punishment
-                    session(['incident_message'=>"Incident Report: $server_info->server_name ($server_info->server_type): $activeIncident->incident_message"]);
-                    if ($activeIncident->server_shutdown) {
-                        $this->serverShutdownForRounds($server_info->id, rand(1,2));
+                    if ($activeIncident->active == true) {
+                        session(['incident_message'=>"Incident Report: $server_info->server_name ($server_info->server_type): $activeIncident->incident_message"]);
+                        if ($activeIncident->server_shutdown) {
+                            $this->serverShutdownForRounds($server_info->id, rand(1,2));
+                        }
                     }
                 } else {
                     // unset punishment

@@ -2,5 +2,9 @@
 
 @section('content')
     <h4>Game instruction</h4>
-    <p>Instructionssss</p>
+    <ol>
+    @foreach(json_decode(App\GameInstruction::first()->instruction) as $instruct)
+        <li>{{ $instruct }}</li>
+    @endforeach
+    </ol>
 @endsection

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Game;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class GamesController extends Controller
 {
@@ -34,6 +35,10 @@ class GamesController extends Controller
             $old_game->active = false;
             $old_game->save();
         }
+
+        // unset round_message & incident_message session
+        Session::forget('incident_message');
+        Session::forget('round_message');
 
         // get game info init
         $game_info_init = GamePlayerInfoInit::first();
