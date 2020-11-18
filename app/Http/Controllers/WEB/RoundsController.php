@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\WEB;
 
 use App\Game;
+use App\GameIncidentHandle;
 use App\GameLog;
 use App\Http\Controllers\Controller;
 use App\PatchInfo;
@@ -157,8 +158,19 @@ class RoundsController extends Controller
     }
 
     // by incident function
+    private function activateIncident($game_id, $current_round) {
+        $all_incidents_in_game = GameIncidentHandle::where('game_id', $game_id)->get();
+        foreach($all_incidents_in_game as $incident) {
+            if ($incident->round == $current_round) {
+                $incident->active = true;
+                $incident->save();
+                session(['incident_message'=>"Incident Report: $incident->error_server_name: $incident->incident_message"]);
+            }
+        }
+    }
+
     // TODO: handle incidents, for example -> 1. server sudden down, 2. being hacked, 3. under DDOS attack
-    private function checkIncident($game_id, $current_round) {
+    private function checkIncident($game_id) {
 
     }
 
@@ -381,7 +393,7 @@ class RoundsController extends Controller
         $this->checkProductionAndBackupHitGoodPatch($game_info->id);
         $game_info->round = $game_info->round + 1;
         $game_info->save();
-        $this->checkIncident($game_info->id, $game_info->round);
+        $this->activateIncident($game_info->id, $game_info->round);
 
         return redirect('/dashboard');
     }

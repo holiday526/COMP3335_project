@@ -12,6 +12,7 @@ class GameIncidentHandle extends Model
     protected $table = 'game_incident_handles';
 
     protected $fillable = [
-        'id', 'game_id', 'game_incident_id', 'active'
+        'id', 'game_id', 'active', 'server_shutdown', 'round',
+        'error_server_name', 'money_lost', 'reputation_lost', 'incident_message', 'server_type'
     ];
 }

@@ -114,12 +114,18 @@ class GamesController extends Controller
         }
 
         // set game incident init
-        $game_incident_init_ids = GameIncidentInit::pluck('id')->toArray();
-        foreach ($game_incident_init_ids as $game_incident_init_id) {
+        $game_incident_inits = GameIncidentInit::all();
+        foreach ($game_incident_inits as $game_incident_init) {
             GameIncidentHandle::create([
                 'game_id' => $new_game->id,
-                'game_incident_id' => $game_incident_init_id,
-                'active' => false
+                'active' => false,
+                'server_shutdown' => $game_incident_init->server_shutdown,
+                'round' => $game_incident_init->round,
+                'error_server_name' => $game_incident_init->error_server_name,
+                'money_lost' => $game_incident_init->money_lost,
+                'reputation_lost' => $game_incident_init->reputation_lost,
+                'incident_message' => $game_incident_init->incident_message,
+                'server_type' => $game_incident_init->server_type
             ]);
         }
 
