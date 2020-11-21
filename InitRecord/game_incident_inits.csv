@@ -1,0 +1,2 @@
+"id","round","error_server_name","server_type","server_shutdown","money_lost","reputation_lost","incident_message","created_at","updated_at"
+1,5,"Menu Server","Production",1,3000,5,"Server Under Attack",NULL,NULL

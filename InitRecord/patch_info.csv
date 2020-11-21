@@ -1,0 +1,5 @@
+"patch_id","patch_name","patch_version","patch_description","patch_url","patch_variant","created_at","updated_at"
+1,"20.3.1.4.0","20.3.1.4.0","Descccrrripttttion","https://www.google.com","info",NULL,NULL
+2,"20.4.1.5.1","20.4.1.5.1","Descccrrripttttion 2","https://www.google.com","warning",NULL,NULL
+3,"20.5.1.5.1","20.5.1.5.1","Descccrrripttttion 3","https://www.google.com","danger",NULL,NULL
+4,"20.6.1.5.1","20.6.1.5.1","Descccrrripttttion 4","https://www.google.com","danger",NULL,NULL
