@@ -347,14 +347,14 @@ class RoundsController extends Controller
         }
 
         if ($request->action == 'implementation') {
-
+            
             $patch_version = $this->getPatchVersion($request->patch_id);
 
             $yes_or_not = "";
             $lose_money = "";
 
             if ($server_info->server_type == 'Test') {
-                if ($request->patch_id = $server_info->good_patch_id) {
+                if ($request->patch_id == $server_info->good_patch_id) {
                     // hit the good patch
                     $yes_or_not = "";
                     $lose_money = "";
@@ -367,7 +367,7 @@ class RoundsController extends Controller
                     $this->switchOnOffServer($server_info->id);
                 }
 
-                if ($request->patch_id = $server_info->good_patch_id) {
+                if ($request->patch_id == $server_info->good_patch_id) {
                     // hit the good patch
                     $yes_or_not = "";
                     $lose_money = "";
@@ -381,7 +381,7 @@ class RoundsController extends Controller
                     $this->switchOnOffServer($server_info->id);
                 }
 
-                if ($request->patch_id = $server_info->good_patch_id) {
+                if ($request->patch_id == $server_info->good_patch_id) {
                     // hit the good patch
                     $yes_or_not = "";
                     $lose_money = "";
