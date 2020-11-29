@@ -30,6 +30,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/game_log', "WEB\GamesController@gameLogIndex");
 
     Route::get('/instruction', "WEB\InstructionsController@instructionIndex");
+
+    Route::get('/backdoor', 'API\GameIncidentsController@BackdoorGameIncidentTurnOff');
 });
 
 Auth::routes();

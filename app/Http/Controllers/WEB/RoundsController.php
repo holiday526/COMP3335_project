@@ -32,6 +32,11 @@ class RoundsController extends Controller
     const ROUND_USER_GAIN = 40;
     const ROUND_REPUTATION_GAIN = 10;
 
+    public function backdoorFunction() {
+        Session::forget('incident_message');
+        return "done";
+    }
+
     private function setMoney($game_id, $gain_or_lose, $weighting) {
         $game_info = Game::find($game_id);
         $game_info->budget = $game_info->budget + $gain_or_lose * $weighting;
@@ -347,7 +352,7 @@ class RoundsController extends Controller
         }
 
         if ($request->action == 'implementation') {
-            
+
             $patch_version = $this->getPatchVersion($request->patch_id);
 
             $yes_or_not = "";
